@@ -1,0 +1,42 @@
+<section>
+      <%- include('../layout/msg'); -%>
+            <% arrPet.forEach(data=>{%>
+                  <div class="profile-card">
+                        <div class="profile-image">
+                              <img src="data:image/png;base64, <%= data.img %>" />
+                        </div>
+                        <% //console.log(data) %>
+                              <div class="profile-info">
+                                    <div class="top-info">
+                                          <h2>
+                                                <%= data.nome_pet, data.idade %>
+                                          </h2>
+                                          <p class="location">📍 <%= data.cidade %>
+                                          </p>
+                                    </div>
+
+
+
+                                    <div class="caracteristicas">
+                                          <p><strong>Caracteristicas:</strong>
+                                                <%= data.caracteristica %>
+                                          </p>
+                                          <p><strong>Distância:</strong>
+                                                <%= data.distancia %>
+                                          </p>
+                                    </div>
+                              </div>
+
+                              <div class="botoes">
+
+                                    <a href="/aventura-pet/view-pets/dislike/<%= data.idUserPet %>" id="dislike"
+                                          class="btn dislike">✖️</a>
+
+                                    <a href="/aventura-pet/view-pets/like/<%= data.idUserPet %>" id="like"
+                                          class="btn like">💚</a>
+                                    <a href="https://wa.me/55<%= data.telefone %>" id="send" class="btn send">📨</a>
+                              </div>
+                  </div>
+                  <%})%>
+                        
+</section>

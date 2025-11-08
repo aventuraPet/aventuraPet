@@ -50,39 +50,11 @@ module.exports = {
             msg = true;
         }
 
-        /*if (pets != null) {
-           
-            if (pets.length > 1) {
-                pets.forEach(pet => { console.log(pet.pets);
-                    pet.forEach(element =>{
-                        
-                        data.push({
-                        
-                        "img": Buffer.from(element.image.imagem).toString('base64'),
-                        "nome_pet": element.nome_pet,
-                        "idade": element.idade,
-                        "caracteristica": element.caracteristica
-                    });
-                    })
-                    
-                })
-            } else {
-                pets.forEach(pet => {
-                data.push({
-                        "img": Buffer.from(pet.image.imagem).toString('base64'),
-                        "nome_pet": pet.nome_pet,
-                        "idade": pet.idade,
-                        "caracteristica": pet.caracteristica
-                    });
-                });
-            }
-
-            msg = true;
-        }*/
+       
 
 
 
-    console.log(numPetDisponivel);
+
         res.render('home/index', { fileName: 'main', "data": data, "numAdotados": numAdotados, "msg": msg, "numPetDisponivel":numPetDisponivel});
     },
     pets: function (req, res) {

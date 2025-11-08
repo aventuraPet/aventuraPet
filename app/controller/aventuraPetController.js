@@ -3,25 +3,22 @@ const imagePetModel = require('../model/models/imagePetModel');
 const userModel = require('../model/models/userModel');
 const contactUserModel = require('../model/models/contactUserModel');
 var searchCEP = require('../libs/searchCEP');
-const notViewUserPetModel = require('../model/models/notViewUserPetModel');
 const calcDistance = require('../libs/calcDistance');
 const configUserModel = require('../model/models/configUserModel');
-const viewPetUserModel = require('../model/models/viewPetUser');
 const { QueryTypes } = require('sequelize');
 const sequelize = require('../model/connect');
-const { use } = require('passport');
+const msgSession = require('../libs/msgSession');
 
-userModel.hasMany(petUserModel, { foreignKey: 'id_usuario' });
-petUserModel.belongsTo(userModel, { foreignKey: 'id_usuario' });
+
 
 
 module.exports = {
     index: async function (req, res) {
-        res.render('aventura-pet/index', { fileName: 'main' });
+        res.render('aventura-pet/index', { fileName: { menu: 'main' } });
     },
     addPetPage: function (req, res) {
 
-        res.render('aventura-pet/index', { fileName: 'add-pet' });
+        res.render('aventura-pet/index', { fileName: { menu: "main", section: 'add-pet' } });
     },
     insertImgPet: async function (req, res) {
 
@@ -48,7 +45,7 @@ module.exports = {
             console.log(error)
         }
 
-        res.render('aventura-pet/index', { fileName: 'main' });
+        res.render('aventura-pet/index', { fileName: { menu: 'main' } });
     },
 
     viewPets: async function (req, res) {
@@ -62,6 +59,7 @@ module.exports = {
         });
         let arrUser = JSON.parse(JSON.stringify(user, null));
         let petVisualizado = JSON.parse(arrUser[0].pet_visualizado);
+
         if (!req.session.userAutentication.dataUser[0].pet_visualizado) {
             req.session.userAutentication.dataUser[0].pet_visualizado
         }
@@ -80,9 +78,14 @@ module.exports = {
 
         do {
             var petResult = await this.verifyViewPet(req.session.offsetPet, petVisualizado);
-            console.log(petResult);
+            //console.log(petResult);
             if (petResult == false) {
-                res.redirect('/aventura-pet');
+
+                if (!req.session.strErrorMsg) {
+                    req.session.strErrorMsg = "Não ha mais pets disponivel para a sua perfio";
+                }
+               
+                res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
                 req.session.offsetPet = 0;
                 return;
             }
@@ -90,8 +93,8 @@ module.exports = {
 
 
 
-            console.log(petResult.result);
-            console.log(distanceResult.result);
+            //console.log(petResult.result);
+            //console.log(distanceResult.result);
 
             var result = '';
 
@@ -130,7 +133,6 @@ module.exports = {
             }
 
 
-
         } while (result);
 
         var data = [];
@@ -148,7 +150,12 @@ module.exports = {
             });
         });
 
-        res.render('aventura-pet/index', { fileName: 'principal', data: data, msg:"msg" });
+        res.render('aventura-pet/index', {
+            fileName: {
+                menu: "main",
+                section: "principal"
+            }, data: data
+        });
     },
     verifyViewPet: async function (offset, petVisualizado) {
         //funcao que verifica se o pet ja foi visualizado pelo usuario
@@ -159,24 +166,20 @@ module.exports = {
         if (pet == false) {
             return false;
         }
-        var result = '';
+        var result = false;
         if (petVisualizado.length == 0) {
             return { result: false, pet: pet }
         }
-        
+
         petVisualizado.forEach(visualizado => {
-            console.log("visualizado.id_user_pet " + visualizado.id_user_pet + " " + "pet[0].id_user_pet " +  pet[0].id_user_pet);
+            console.log("visualizado.id_user_pet " + visualizado.id_user_pet + " " + "pet[0].id_user_pet " + pet[0].id_user_pet);
             console.log(visualizado.id_user_pet == pet[0].id_user_pet);
 
-            //arrumar
+
             if (visualizado.id_user_pet == pet[0].id_user_pet) {
                 result = true;
-                
-                //return { result: result, pet: pet }
-            } else {
-                result = false;
 
-                //return { result: result, pet: pet }
+
             }
 
 
@@ -274,7 +277,7 @@ module.exports = {
         let idUser = req.session.userAutentication.dataUser[0].id_usuario;
 
         let petVisualizado = req.session.userAutentication.dataUser[0].pet_visualizado;
-       
+
         petVisualizado.push({ id_user_pet: idUserPet, pet_like: false });
 
         userModel.update({ pet_visualizado: JSON.stringify(petVisualizado) },
@@ -283,6 +286,7 @@ module.exports = {
                     id_usuario: idUser
                 }
             });
+        req.session.offsetPet = 0;
         res.redirect('/aventura-pet/view-pets/')
     },
     like: async function (req, res) {
@@ -290,7 +294,7 @@ module.exports = {
         let idUser = req.session.userAutentication.dataUser[0].id_usuario;
 
         let petVisualizado = req.session.userAutentication.dataUser[0].pet_visualizado;
-      
+
         petVisualizado.push({ id_user_pet: idUserPet, pet_like: true });
 
         userModel.update({ pet_visualizado: JSON.stringify(petVisualizado) },
@@ -299,11 +303,132 @@ module.exports = {
                     id_usuario: idUser
                 }
             });
+        req.session.offsetPet = 0;
         res.redirect('/aventura-pet/view-pets/')
     },
-    favorite: function(req, res){
+    favorite: function (req, res) {
         console.log(req.session.userAutentication.dataUser.pet_visualizado);
+    },
+
+    myPets: async function (req, res) {
+        let idUser = req.session.userAutentication.dataUser[0].id_usuario;
+
+        let petUser = await petUserModel.findAll({ where: { id_usuario: idUser } });
+        let arrPetuser = JSON.parse(JSON.stringify(petUser, null));
+        //arrPetuser.push(await this.getMyPets(arrPetuser));
+        let arrImgPet = await this.getMyPets(arrPetuser);
+        //funcao para incluir as imagem de acordo com cada pet
+        arrPetuser.forEach(pet => {
+            arrImgPet.forEach(img => {
+                if (pet.id_user_pet == img.id_user_pet) {
+                    pet.img = Buffer.from(img.imagem).toString('base64');
+                }
+            })
+        });
+
+        res.render('aventura-pet/index', { fileName: { menu: "main", section: 'my-pet' }, arrPetuser: arrPetuser });
+
+    },
+    getMyPets: async function (arrPetuser) {
+        //funcao para pegar imagem no banco dos pets de acordo com o id do pet
+        let arrImgPets = await Promise.all(
+            //percorre o array e pode usar async e await 
+            arrPetuser.map(async pet => {
+                const imgPet = await imagePetModel.findAll({
+                    where: { id_user_pet: pet.id_user_pet }
+                });
+                return JSON.parse(JSON.stringify(imgPet, null))[0];
+            })
+        );
+
+
+        return arrImgPets;
+    },
+
+    mark: async function (req, res) {
+        //funcao que marca pet como adotado
+        await petUserModel.update(
+            { disponivel: false },
+            { where: { id_user_pet: req.params.idUserPet } });
+
+        if (!req.session.strSuccessMsg) {
+            req.session.strSuccessMsg = "pet marcado com sucesso";
+        }
+        res.redirect('/aventura-pet/my-pets')
+    },
+
+    configDistancePage: async function (req, res) {
+        let configUser = await configUserModel.findAll({
+            where: { id_usuario: req.session.userAutentication.dataUser[0].id_usuario }
+        });
+
+        let data = JSON.parse(JSON.stringify(configUser, null));
+
+        res.render('aventura-pet/index', { fileName: { menu: "main", section: 'config-distance' }, configUser: data, msgSuccess: msgSession.getMsgSuccess(req) });
+
+    },
+
+    configDistanceUpdate: async function (req, res) {
+        await configUserModel.update(
+            { distancia: req.body.distancia },
+            { where: { id_usuario: req.session.userAutentication.dataUser[0].id_usuario } });
+        if (!req.session.strSuccessMsg) {
+            req.session.strSuccessMsg = "distancia alterada com sucesso";
+        }
+        this.configDistancePage(req, res);
+        msgSession.cleanMsgSuccess();
+
+    },
+    favoritePage: async function (req, res) {
+        let user = await userModel.findAll({
+            where: { id_usuario: req.session.userAutentication.dataUser[0].id_usuario }
+        });
+
+        let arrUser = JSON.parse(JSON.stringify(user, null));
+        let arrPetVisualizado = JSON.parse(arrUser[0].pet_visualizado);
+
+        if (arrPetVisualizado.length == 0) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "voce ainda nao tem pets favorito";
+            }
+
+            res.render('aventura-pet/index', { fileName: { menu: "main", section: 'favoritos' }, msgError: msgSession.getMsgError(req) });
+        }
+
+        let arrPet = await this.getPetUser(arrPetVisualizado);
+
+        for (const pet of arrPet) {
+            const imgPet = await imagePetModel.findAll({ where: { id_user_pet: pet[0].id_user_pet } });
+            const arrImgPet = JSON.parse(JSON.stringify(imgPet, null));
+            pet[0].img = Buffer.from(arrImgPet[0].imagem).toString("base64");
+
+        };
+        let data = [];
+
+        arrPet.forEach(pet => {
+            pet.forEach(p => {
+                data.push(p);
+            });
+        });
+
+        res.render('aventura-pet/index', { fileName: { menu: "main", section: 'favoritos' }, arrPet: data});
+        
+    },
+    getPetUser: async function (arrPetVisualizado) {
+        let arrDataPet = Promise.all(
+            arrPetVisualizado.map(async pet => {
+                const petUser = await petUserModel.findAll({ where: { id_user_pet: pet.id_user_pet } });
+                return JSON.parse(JSON.stringify(petUser, null))
+            }));
+
+
+
+        return arrDataPet
     }
+
+
+
+
 
 }
 

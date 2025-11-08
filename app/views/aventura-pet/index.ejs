@@ -3,12 +3,17 @@
 <%- include('../layout/body'); -%>   <!--inicio do corpo html-->
     <%- include('header'); -%><!--cabeçalho html da pagina-->
     <div class="dashboard-container">
-        <div class="menu-section">
-            <%- include('main'); -%>
-        </div>
+        
+            <div class="menu-section">
+                <%- include(fileName.menu); -%>
+            </div>
+     
+       
         <div class="pet-section">
            
-                <%- include(fileName); -%>
+               <% if("section" in fileName) {%>
+                    <%- include(fileName.section) %> 
+                <%}%>
             
         </div>
     </div>
