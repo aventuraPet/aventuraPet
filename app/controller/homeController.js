@@ -16,6 +16,7 @@ module.exports = {
         let numAdotados = await this.getNumberadopted();
         let data = [];
         let msg = false;
+        let numPetDisponivel = await this.getNumberPetAvaliable();
 
         //console.log(pets);
         //gera um novo objeto corretamente para ser mostrado na home do front and
@@ -81,8 +82,8 @@ module.exports = {
 
 
 
-
-        res.render('home/index', { fileName: 'main', "data": data, "numAdotados": numAdotados, "msg": msg });
+    console.log(numPetDisponivel);
+        res.render('home/index', { fileName: 'main', "data": data, "numAdotados": numAdotados, "msg": msg, "numPetDisponivel":numPetDisponivel});
     },
     pets: function (req, res) {
         res.render('home/index', { fileName: 'pets' });
@@ -175,7 +176,19 @@ module.exports = {
         return 0;
 
 
+    },
+
+    getNumberPetAvaliable: async function () {
+        let petUser = await petUserModel.count({
+            where: {
+                disponivel: 1
+            },
+
+        });
+
+        return JSON.parse(JSON.stringify(petUser, 0));
     }
+
 
 
 }

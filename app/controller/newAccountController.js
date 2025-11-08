@@ -34,7 +34,7 @@ module.exports = {
                 telefone: phone,
                 cep: cep, 
                 email: email,
-                pet_visualizado: '{[]}'
+                pet_visualizado: '[]'
             });
 
             let salt = bcrypt.genSaltSync(10);

@@ -80,7 +80,7 @@ module.exports = {
 
         do {
             var petResult = await this.verifyViewPet(req.session.offsetPet, petVisualizado);
-
+            console.log(petResult);
             if (petResult == false) {
                 res.redirect('/aventura-pet');
                 req.session.offsetPet = 0;
@@ -90,13 +90,14 @@ module.exports = {
 
 
 
-            //console.log(petResult.result);
-            //console.log(distanceResult.result);
+            console.log(petResult.result);
+            console.log(distanceResult.result);
 
             var result = '';
 
             //se o pet foi visualizado e se é dentro da distancia -> true e busca o proximo
             //true && true
+
             if (petResult.result && distanceResult.result) {
                 console.log("true && true")
                 result = true;
@@ -139,15 +140,15 @@ module.exports = {
                 img: Buffer.from(pet.imagem).toString('base64'),
                 nome_pet: pet.nome_pet,
                 idade: pet.idade,
-                //cidade: cidadeUserPet,
+                cidade: distanceResult.cidade,
                 caracteristica: pet.caracteristica,
-                //distancia: distance,
+                distancia: distanceResult.distance,
                 idUserPet: pet.id_user_pet,
                 telefone: pet.telefone
             });
         });
 
-        res.render('aventura-pet/index', { fileName: 'principal', data: data });
+        res.render('aventura-pet/index', { fileName: 'principal', data: data, msg:"msg" });
     },
     verifyViewPet: async function (offset, petVisualizado) {
         //funcao que verifica se o pet ja foi visualizado pelo usuario
@@ -162,14 +163,20 @@ module.exports = {
         if (petVisualizado.length == 0) {
             return { result: false, pet: pet }
         }
-
+        
         petVisualizado.forEach(visualizado => {
+            console.log("visualizado.id_user_pet " + visualizado.id_user_pet + " " + "pet[0].id_user_pet " +  pet[0].id_user_pet);
+            console.log(visualizado.id_user_pet == pet[0].id_user_pet);
 
+            //arrumar
             if (visualizado.id_user_pet == pet[0].id_user_pet) {
                 result = true;
-
+                
+                //return { result: result, pet: pet }
             } else {
                 result = false;
+
+                //return { result: result, pet: pet }
             }
 
 
@@ -243,10 +250,10 @@ module.exports = {
         //console.log(dataSerachCEPUser)
         //console.log(dataSerachCEPUserPet)
         if (distance <= configDistanceUser) {
-            return { result: true, cidade: cidadeUserPet };
+            return { result: true, cidade: cidadeUserPet, distance: distance };
         }
 
-        return { result: false, cidade: cidadeUserPet };
+        return { result: false, cidade: cidadeUserPet, distance: distance };
     },
 
 
@@ -293,6 +300,9 @@ module.exports = {
                 }
             });
         res.redirect('/aventura-pet/view-pets/')
+    },
+    favorite: function(req, res){
+        console.log(req.session.userAutentication.dataUser.pet_visualizado);
     }
 
 }
