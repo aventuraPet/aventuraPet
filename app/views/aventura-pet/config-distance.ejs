@@ -1,0 +1,23 @@
+<section>
+        <%- include('../layout/msg'); -%>
+    <p>modifique sua distancia</p>
+    
+    <form action="/aventura-pet/distance" method="post">
+        <input type="range" id="distancia" name="distancia" value="<%- configUser[0].distancia %>">
+        <br>
+        <p id="valueDistancia"><%- configUser[0].distancia %> km</p>
+        <br>
+        <input type="submit" value="Salvar">
+        <a href="/aventura-pet">cancelar</a>
+    </form>
+</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var distancia = document.getElementById("distancia");
+        var valueDistancia = document.getElementById("valueDistancia");
+        distancia.addEventListener("input", function(){
+            valueDistancia.textContent = `${distancia.value} KM`
+        })
+
+    })
+</script>
