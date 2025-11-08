@@ -109,5 +109,9 @@ aventuraPetRouter.get('/aventura-pet/view-pets/like/:idUserPet', function(req, r
     aventuraPetController.like(req, res);
 });
 
+aventuraPetRouter.get('/aventura-pet/favorite', isAutentication, function(req, res){
+    aventuraPetController.favorite(req, res);
+});
+
 module.exports = aventuraPetRouter;
 
