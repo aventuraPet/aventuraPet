@@ -8,7 +8,9 @@ const configUserModel = require('../model/models/configUserModel');
 const { QueryTypes } = require('sequelize');
 const sequelize = require('../model/connect');
 const msgSession = require('../libs/msgSession');
-
+const passWordHashModel = require('../model/models/passwordHashModel');
+const bcrypt = require('bcryptjs');
+const passwordHashModel = require('../model/models/passwordHashModel');
 
 
 
@@ -84,7 +86,7 @@ module.exports = {
                 if (!req.session.strErrorMsg) {
                     req.session.strErrorMsg = "Não ha mais pets disponivel para a sua perfio";
                 }
-               
+
                 res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
                 req.session.offsetPet = 0;
                 return;
@@ -411,8 +413,8 @@ module.exports = {
             });
         });
 
-        res.render('aventura-pet/index', { fileName: { menu: "main", section: 'favoritos' }, arrPet: data});
-        
+        res.render('aventura-pet/index', { fileName: { menu: "main", section: 'favoritos' }, arrPet: data });
+
     },
     getPetUser: async function (arrPetVisualizado) {
         let arrDataPet = Promise.all(
@@ -424,6 +426,78 @@ module.exports = {
 
 
         return arrDataPet
+    },
+
+    configurePage: async function (req, res) {
+        let idUser = req.session.userAutentication.dataUser[0].id_usuario;
+        let contactUser = await contactUserModel.findAll({ where: { id_usuario: idUser } });
+        let arrContactUser = JSON.parse(JSON.stringify(contactUser, null));
+
+        res.render('aventura-pet/index',
+            {
+                fileName: { menu: "main", section: 'configure' },
+                data: arrContactUser,
+                msgSuccess: msgSession.getMsgSuccess(req)
+            });
+    },
+    configureUpdate: async function (req, res) {
+        let idUser = req.session.userAutentication.dataUser[0].id_usuario;
+        const { telefone, cep, email } = req.body;
+        await contactUserModel.update({
+            telefone: telefone,
+            cep: cep,
+            email: email
+        },
+            {
+                where: { id_usuario: idUser }
+            })
+
+        res.render('aventura-pet/index', { fileName: { menu: "main" } });
+    },
+    changePassPage: function (req, res) {
+        res.render('aventura-pet/index', { fileName: { menu: "main", section: "change-pass" } });
+    },
+    verifyPass: async function (req, res) {
+        let idUser = req.session.userAutentication.dataUser[0].id_usuario;
+        const passNow = req.body.pass_now
+        let userPass = await passWordHashModel.findAll({
+            where: { id_usuario: idUser }
+        });
+        let arrUserPass = JSON.parse(JSON.stringify(userPass, null));
+
+        if (!bcrypt.compareSync(passNow, arrUserPass[0].password_hash)) {
+            return res.status(200).send({ status: false, msg: "senha invalida" })
+        }
+
+
+        let form = {
+            body: {
+                passOne: { element: 'input', type: "password", name: "passwordOne", id: "passwordOne" },
+                passTwo: { element: 'input', type: "password", name: "passwordTwo", id: "passwordTwo" },
+                button: { element: 'input', type: "submit", value: "salvar", },
+            }
+        };
+
+        res.status(200).send(form);
+
+    },
+    newPass: async function (req, res) {
+        let idUser = req.session.userAutentication.dataUser[0].id_usuario;
+        let salt = bcrypt.genSaltSync(10);
+        console.log(req.body.password)
+        let hash = bcrypt.hashSync(req.body.password, salt);
+        await passwordHashModel.update({
+            password_hash: hash
+        }, {
+            where: {
+                id_usuario: idUser
+            }
+        });
+
+       
+
+        res.status(200).redirect("/aventura-pet");
+
     }
 
 

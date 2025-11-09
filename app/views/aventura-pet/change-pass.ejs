@@ -1,0 +1,105 @@
+<section>
+    <main>
+        <p>digite sua senha atual</p>
+        <input type="password" name="pass-now" id="pass-now">
+        <br>
+        <button id="verificar">virificar</button>
+        <a href="/aventura-pet/configure">VOLTAR</a>
+        <form id="form-change-pass">
+
+        </form>
+    </main>
+</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var verificar = document.getElementById("verificar");
+        verificar.addEventListener("click", function(){
+            var form = document.getElementById("form-change-pass");
+            var pass_now = document.getElementById("pass-now");
+            fetch('/aventura-pet/change-pass',{
+                method: 'post',
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body:JSON.stringify({
+                    pass_now: pass_now.value
+                })
+            })
+            .then(response => response.json())
+            .then(data =>{
+                if(!data.status){
+                    var elementMsg = document.createElement("p");
+                    elementMsg.setAttribute("class", "msgError");
+                    elementMsg.textContent = data.msg;
+                    form.appendChild(elementMsg);
+                }
+
+            
+
+                var responsePassOne = data.body.passOne;
+                var responsePassTwo = data.body.passTwo;
+                var responseButton = data.body.button;
+
+                var passwordOne = document.createElement(responsePassOne.element);
+                var passwordTwo = document.createElement(responsePassTwo.element);
+                var button = document.createElement(responseButton.element);
+                
+                passwordOne.setAttribute("type", responsePassOne.type);
+                passwordOne.setAttribute("name", responsePassOne.name);
+                passwordOne.setAttribute("id", responsePassOne.id);
+
+                passwordTwo.setAttribute("type", responsePassTwo.type);
+                passwordTwo.setAttribute("name", responsePassTwo.name);
+                passwordTwo.setAttribute("id", responsePassTwo.id);
+
+                button.setAttribute('type', responseButton.type);
+                button.setAttribute('value', responseButton.value);
+
+               
+                form.appendChild(passwordOne);
+                form.appendChild(passwordTwo);
+                form.appendChild(button);
+            })
+            .catch(error => {
+                console.error("erro na requisição", error);
+            })
+        });
+
+        document.getElementById("form-change-pass").addEventListener("submit", async function(form){
+            form.preventDefault();
+            var formulario = document.getElementById("form-change-pass");
+            var errorDiv = document.createElement("div");
+            let isValid = "";
+            const password = formulario.querySelector("#passwordOne").value;
+            const verifyPassword = formulario.querySelector("#passwordTwo").value;
+            if(password.length < 8 || !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/.test(password)){
+                errorDiv.textContent = "Senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e símbolo.";
+                isValid = false;
+            }else if(password !== verifyPassword){
+                errorDiv.textContent = "senha nao conicidem";
+                isValid = false;
+            }else{
+                isValid = true;
+            }
+            formulario.appendChild(errorDiv);
+            if(isValid){
+                await fetch("/aventura-pet/new-pass", {
+                    method:"post",
+                    headers:{ "Content-Type": "application/json"},
+                    body: JSON.stringify({password, verifyPassword})
+                })
+                .then(response => {
+                    if(response.ok){
+                        formulario.remove();
+                        alert("senha altrada com sucesso");
+                    }else{
+                        errorDiv.textContent = "nao foi possivel alterar a senha tente novamente";
+                        formulario.appendChild(errorDiv);
+                    }
+                })
+               
+            }
+        });
+
+    });
+</script>
