@@ -1,0 +1,22 @@
+<section>
+    <% console.log(data) %>
+    <main>
+        <h3>CONFIGURAÇÃO DE USUARIO</h3>
+        <form action="/aventura-pet/configure" method="post">
+            <h4>CONTATO</h4>
+            <label for="telefone">telefone</label>
+            <input type="text" name="telefone" id="telefone" value="<%- data[0].telefone %>">
+            <label for="email">email</label>
+            <input type="email" name="email" id="email" value="<%- data[0].email %>">
+            <label for="cep">cep</label>
+            <input type="text" name="cep" id="cep" value="<%- data[0].cep %>">
+            <br>
+          
+            <input type="submit" value="salvar">
+            <a href="/aventura-pet">cancelar</a>
+
+            <br>
+              <a href="/aventura-pet/change-pass">anterar senha</a>
+        </form>
+    </main>
+</section>

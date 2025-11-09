@@ -135,5 +135,22 @@ aventuraPetRouter.post('/aventura-pet/distance', function(req, res){
     aventuraPetController.configDistanceUpdate(req, res);
 });
 
+aventuraPetRouter.get('/aventura-pet/configure', function(req,res){
+    aventuraPetController.configurePage(req, res);
+});
+
+aventuraPetRouter.post('/aventura-pet/configure', function(req,res){
+    aventuraPetController.configureUpdate(req, res);
+});
+aventuraPetRouter.get('/aventura-pet/change-pass', function(req,res){
+    aventuraPetController.changePassPage(req, res);
+});
+aventuraPetRouter.post('/aventura-pet/change-pass', function(req,res){
+    aventuraPetController.verifyPass(req, res);
+});
+aventuraPetRouter.post('/aventura-pet/new-pass', function(req,res){
+    aventuraPetController.newPass(req, res);
+});
+
 module.exports = aventuraPetRouter;
 
