@@ -378,7 +378,8 @@ module.exports = {
             req.session.strSuccessMsg = "distancia alterada com sucesso";
         }
         this.configDistancePage(req, res);
-       
+        msgSession.cleanMsgSuccess();
+
     },
     favoritePage: async function (req, res) {
         let user = await userModel.findAll({
@@ -458,7 +459,7 @@ module.exports = {
     },
     verifyPass: async function (req, res) {
         let idUser = req.session.userAutentication.dataUser[0].id_usuario;
-        const passNow = req.body.password
+        const passNow = req.body.pass_now
         let userPass = await passWordHashModel.findAll({
             where: { id_usuario: idUser }
         });
@@ -471,8 +472,8 @@ module.exports = {
 
         let form = {
             body: {
-                passOne: { element: 'input', type: "password", name: "passwordOne", id: "passwordOne" },
-                passTwo: { element: 'input', type: "password", name: "passwordTwo", id: "passwordTwo" },
+                passOne: { element: 'input', type: "password", name: "passwordOne", id: "passwordOne", placeholder: "Nova senha" },
+                passTwo: { element: 'input', type: "password", name: "passwordTwo", id: "passwordTwo", placeholder: "Verificar senha" },
                 button: { element: 'input', type: "submit", value: "salvar", },
             }
         };
