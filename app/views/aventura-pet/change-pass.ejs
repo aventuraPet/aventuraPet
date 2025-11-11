@@ -56,7 +56,7 @@
                     "Content-Type": "application/json"
                 },
                 body:JSON.stringify({
-                    pass_now: pass_now.value
+                    password: pass_now.value
                 })
             })
             .then(response => response.json())
@@ -121,7 +121,7 @@
             }else{
                 isValid = true;
             }
-            formulario.appendChild(errorDiv);
+            
             if(isValid){
                 await fetch("/aventura-pet/new-pass", {
                     method:"post",
@@ -130,8 +130,8 @@
                 })
                 .then(response => {
                     if(response.ok){
-                        formulario.remove();
-                        alert("senha altrada com sucesso");
+                        fetch("/login/logout");
+                        location.reload(true);
                     }else{
                         errorDiv.textContent = "nao foi possivel alterar a senha tente novamente";
                         formulario.appendChild(errorDiv);
