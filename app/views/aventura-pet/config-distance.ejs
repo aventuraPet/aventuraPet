@@ -1,23 +1,384 @@
-<section>
-        <%- include('../layout/msg'); -%>
-    <p>modifique sua distancia</p>
-    
-    <form action="/aventura-pet/distance" method="post">
-        <input type="range" id="distancia" name="distancia" value="<%- configUser[0].distancia %>">
-        <br>
-        <p id="valueDistancia"><%- configUser[0].distancia %> km</p>
-        <br>
-        <input type="submit" value="Salvar">
-        <a href="/aventura-pet">cancelar</a>
-    </form>
-</section>
+<style>
+    /* ===== PAGE STYLING ===== */
+    main {
+        background: white !important;
+        min-height: 100vh;
+        padding-top: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .full-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-xl);
+        min-height: calc(100vh - 80px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+        padding: var(--spacing-4xl) 0;
+    }
+
+    .content-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-2xl);
+        padding: var(--spacing-4xl);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 1s ease-out;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .content-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-yellow), var(--secondary-blue));
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header {
+        text-align: center;
+        margin-bottom: var(--spacing-3xl);
+        position: relative;
+    }
+
+    .section-title {
+        font-size: var(--font-size-4xl);
+        font-weight: 800;
+        color: var(--primary-blue);
+        margin-bottom: var(--spacing-md);
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-yellow), var(--light-yellow));
+        border-radius: var(--radius-full);
+    }
+
+    .section-subtitle {
+        font-size: var(--font-size-lg);
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .section-divider {
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-yellow), var(--secondary-blue));
+        margin: var(--spacing-lg) auto 0;
+        border-radius: var(--radius-full);
+    }
+
+    /* ===== DISTANCE CONFIGURATION ===== */
+    .distance-config {
+        margin-bottom: var(--spacing-3xl);
+    }
+
+    .distance-title {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: var(--spacing-xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+    }
+
+    .distance-title i {
+        color: var(--accent-yellow);
+        font-size: var(--font-size-lg);
+    }
+
+    .distance-slider-container {
+        position: relative;
+        margin: var(--spacing-2xl) 0;
+    }
+
+    .distance-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 12px;
+        border-radius: var(--radius-full);
+        background: #ccc;
+        outline: none;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .distance-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-full);
+        background: black;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        border: 3px solid var(--background-white);
+        transition: all var(--transition-base);
+    }
+
+    .distance-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6)
+    }
+
+    .distance-slider::-moz-range-thumb {
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-full);
+        background: black;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        border: 3px solid var(--background-white);
+        transition: all var(--transition-base);
+    }
+
+    .distance-slider::-moz-range-thumb:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .distance-value {
+        font-size: var(--font-size-3xl);
+        font-weight: 800;
+        color: var(--primary-blue);
+        margin: var(--spacing-xl) 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all var(--transition-base);
+    }
+
+    .distance-unit {
+        font-size: var(--font-size-lg);
+        color: var(--text-light);
+        font-weight: 500;
+    }
+
+    .distance-info {
+        background: linear-gradient(135deg, rgba(0, 108, 196, 0.1), rgba(0, 55, 107, 0.1));
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+        border-left: 4px solid var(--secondary-blue);
+    }
+
+    .distance-info p {
+        color: var(--text-dark);
+        margin: 0;
+        font-size: var(--font-size-sm);
+        line-height: 1.6;
+    }
+
+    /* ===== ACTION BUTTONS ===== */
+    .action-buttons {
+        display: flex;
+        gap: var(--spacing-lg);
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: var(--spacing-3xl);
+    }
+
+    .btn {
+        padding: var(--spacing-lg) var(--spacing-2xl);
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: var(--font-size-base);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        transition: all var(--transition-base);
+        cursor: pointer;
+        border: none;
+        min-width: 140px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        color: var(--text-white);
+        box-shadow: 0 8px 25px rgba(0, 55, 107, 0.4);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 55, 107, 0.5);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--primary-blue);
+        border: 2px solid var(--primary-blue);
+    }
+
+    .btn-secondary:hover {
+        background: var(--primary-blue);
+        color: var(--text-white);
+        transform: translateY(-2px);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
+        .full-container {
+            padding: 0 var(--spacing-md);
+        }
+
+        .main-content {
+            padding: var(--spacing-xl) 0;
+        }
+
+        .content-wrapper {
+            padding: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: var(--font-size-3xl);
+        }
+
+        .distance-value {
+            font-size: var(--font-size-2xl);
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 280px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .content-wrapper {
+            padding: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+        }
+
+        .distance-slider-container {
+            margin: var(--spacing-xl) 0;
+        }
+    }
+</style>
+
+<main>
+    <%- include('../layout/msg'); -%>
+
+    <div class="full-container">
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="section-header">
+                    <h1 class="section-title">Configurar Distância</h1>
+                    <p class="section-subtitle">Defina o raio de busca para encontrar pets próximos a você</p>
+                    <div class="section-divider"></div>
+                </div>
+
+                <div class="distance-config">
+                    <h2 class="distance-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Raio de Busca
+                    </h2>
+
+                    <div class="distance-slider-container">
+                        <input type="range" id="distancia" name="distancia" class="distance-slider" min="1" max="100" value="<%- configUser[0].distancia %>">
+                    </div>
+
+                    <div class="distance-value">
+                        <span id="valueDistancia"><%- configUser[0].distancia %></span>
+                        <span class="distance-unit">KM</span>
+                    </div>
+
+                    <div class="distance-info">
+                        <p><i class="fas fa-info-circle"></i> <strong>Dica:</strong> Um raio maior aumenta suas chances de encontrar mais pets, mas pode incluir animais mais distantes.</p>
+                    </div>
+                </div>
+
+                <form action="/aventura-pet/distance" method="post" style="display: inline;">
+                    <input type="hidden" name="distancia" id="hiddenDistancia" value="<%- configUser[0].distancia %>">
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Salvar Configuração
+                        </button>
+                        <a href="/aventura-pet" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
 <script>
     document.addEventListener("DOMContentLoaded", function(){
         var distancia = document.getElementById("distancia");
         var valueDistancia = document.getElementById("valueDistancia");
-        distancia.addEventListener("input", function(){
-            valueDistancia.textContent = `${distancia.value} KM`
-        })
+        var hiddenDistancia = document.getElementById("hiddenDistancia");
 
+        function updateDistance() {
+            var value = distancia.value;
+            valueDistancia.textContent = value;
+            hiddenDistancia.value = value;
+
+            // Add visual feedback
+            valueDistancia.style.transform = "scale(1.1)";
+            setTimeout(() => {
+                valueDistancia.style.transform = "scale(1)";
+            }, 150);
+        }
+
+        distancia.addEventListener("input", updateDistance);
+
+        // Initialize with current value
+        updateDistance();
     })
 </script>
