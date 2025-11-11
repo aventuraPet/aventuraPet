@@ -1,4 +1,4 @@
- <style>
+<style>
     /* ===== FULL PAGE LAYOUT ===== */
     main {
         background: white !important;
@@ -193,7 +193,8 @@
         cursor: pointer;
         position: relative;
         overflow: hidden;
-        text-indent: -120px; /* Move default text to the left to avoid overlap */
+        text-indent: -120px;
+        /* Move default text to the left to avoid overlap */
     }
 
     .form-group input[type="file"]:hover {
@@ -435,6 +436,7 @@
             opacity: 0;
             transform: translateY(40px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -442,9 +444,12 @@
     }
 
     @keyframes pulse {
-        0%, 100% {
+
+        0%,
+        100% {
             transform: scale(1);
         }
+
         50% {
             transform: scale(1.1);
         }
@@ -502,94 +507,101 @@
 <main>
     <%- include('../layout/msg'); -%>
 
-    <div class="full-container">
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="content-wrapper">
-                <div class="section-header">
-                    <h1 class="section-title">Adicionar Novo Pet</h1>
-                    <p class="section-subtitle">Preencha os dados do seu pet e adicione fotos para encontrar um lar amoroso</p>
-                    <div class="section-divider"></div>
-                </div>
-
-                <form action="/aventura-pet/add-img" method="post" enctype="multipart/form-data" class="pet-form">
-                    <!-- Basic Information Section -->
-                    <div class="form-section">
-                        <h2 class="form-section-title">
-                            <i class="fas fa-info-circle"></i>
-                            Informações Básicas
-                        </h2>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="namepet"><i class="fas fa-tag"></i>Nome do Pet</label>
-                                <input type="text" name="namepet" id="namepet" required placeholder="Digite o nome do pet">
-                            </div>
-                            <div class="form-group">
-                                <label for="idade"><i class="fas fa-birthday-cake"></i>Idade</label>
-                                <input type="number" name="idade" id="idade" min="0" max="30" required placeholder="Idade em anos">
-                            </div>
-                        </div>
+        <div class="full-container">
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="section-header">
+                        <h1 class="section-title">Adicionar Novo Pet</h1>
+                        <p class="section-subtitle">Preencha os dados do seu pet e adicione fotos para encontrar um lar
+                            amoroso</p>
+                        <div class="section-divider"></div>
                     </div>
 
-                    <!-- Characteristics Section -->
-                    <div class="form-section">
-                        <h2 class="form-section-title">
-                            <i class="fas fa-heart"></i>
-                            Características
-                        </h2>
-                        <div class="form-group">
-                            <label for="caracteristica"><i class="fas fa-edit"></i>Descrição Detalhada</label>
-                            <textarea name="caracteristica" id="caracteristica" rows="4" required placeholder="Descreva a personalidade, porte, necessidades especiais, comportamento com outros animais e crianças, etc."></textarea>
+                    <form action="/aventura-pet/add-img" method="post" enctype="multipart/form-data" class="pet-form">
+                        <!-- Basic Information Section -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">
+                                <i class="fas fa-info-circle"></i>
+                                Informações Básicas
+                            </h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="namepet"><i class="fas fa-tag"></i>Nome do Pet</label>
+                                    <input type="text" name="namepet" id="namepet" required
+                                        placeholder="Digite o nome do pet">
+                                </div>
+                                <div class="form-group">
+                                    <label for="idade"><i class="fas fa-birthday-cake"></i>Idade</label>
+                                    <input type="number" name="idade" id="idade" min="0" max="30" required
+                                        placeholder="Idade em anos">
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Photos Section -->
-                    <div class="form-section">
-                        <h2 class="form-section-title">
-                            <i class="fas fa-camera"></i>
-                            Fotos do Pet
-                        </h2>
-                        <div class="form-group">
-                            <label for="imgpet"><i class="fas fa-images"></i>Selecione as imagens</label>
-                            <input type="file" name="imgpet" id="imgpet" multiple accept="image/*" required>
-                            <small style="display: block; margin-top: var(--spacing-sm); color: var(--text-light); font-size: var(--font-size-sm);">
-                                <i class="fas fa-info-circle"></i> Selecione uma imagem de alta qualidade (JPG, PNG, GIF)
-                            </small>
-                            <button type="button" id="remove-photos-btn" class="remove-photos-btn">
-                                <i class="fas fa-trash"></i>
-                                Remover Fotos Selecionadas
+                        <!-- Characteristics Section -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">
+                                <i class="fas fa-heart"></i>
+                                Características
+                            </h2>
+                            <div class="form-group">
+                                <label for="caracteristica"><i class="fas fa-edit"></i>Descrição Detalhada</label>
+                                <textarea name="caracteristica" id="caracteristica" rows="4" required
+                                    placeholder="Descreva a personalidade, porte, necessidades especiais, comportamento com outros animais e crianças, etc."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Photos Section -->
+                        <div class="form-section">
+                            <h2 class="form-section-title">
+                                <i class="fas fa-camera"></i>
+                                Fotos do Pet
+                            </h2>
+                            <div class="form-group">
+                                <label for="imgpet"><i class="fas fa-images"></i>Selecione as imagens</label>
+                                <input type="file" name="imgpet" id="imgpet" multiple accept="image/*" required>
+                                <small
+                                    style="display: block; margin-top: var(--spacing-sm); color: var(--text-light); font-size: var(--font-size-sm);">
+                                    <i class="fas fa-info-circle"></i> Selecione uma imagem de alta qualidade (JPG, PNG,
+                                    GIF)
+                                </small>
+                                <button type="button" id="remove-photos-btn" class="remove-photos-btn">
+                                    <i class="fas fa-trash"></i>
+                                    Remover Fotos Selecionadas
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Image Preview Section -->
+                        <div class="image-preview-section">
+                            <h3 class="preview-title">
+                                <i class="fas fa-images"></i>
+                                Pré-visualização das Imagens
+                            </h3>
+                            <div id="imagens" class="image-preview-grid">
+                                <!-- Imagens serão inseridas aqui via JavaScript -->
+                            </div>
+                        </div>
+<br>
+<br>
+                        <!-- Submit Section -->
+                        <div class="submit-section">
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paw"></i>
+                                Adicionar Pet
                             </button>
                         </div>
-                    </div>
-
-                    <!-- Submit Section -->
-                    <div class="submit-section">
-                        <button type="submit" class="submit-btn">
-                            <i class="fas fa-paw"></i>
-                            Adicionar Pet
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Image Preview Section -->
-                <div class="image-preview-section">
-                    <h3 class="preview-title">
-                        <i class="fas fa-images"></i>
-                        Pré-visualização das Imagens
-                    </h3>
-                    <div id="imagens" class="image-preview-grid">
-                        <!-- Imagens serão inseridas aqui via JavaScript -->
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
 </main>
 
 
 
 <script>
-    document.getElementById('imgpet').addEventListener("change", function (e){
+    document.getElementById('imgpet').addEventListener("change", function (e) {
         //verifica se o numero de imagens é maior que o permitido
         //avisa o usuario e limpa o elemento
         if (e.target.files.length <= 3) {
@@ -609,7 +621,7 @@
                     var removeBtn = document.createElement("button");
                     removeBtn.className = "image-remove";
                     removeBtn.innerHTML = "×";
-                    removeBtn.onclick = function() {
+                    removeBtn.onclick = function () {
                         container.remove();
                         // Atualizar o input file removendo a imagem
                         var dt = new DataTransfer();
@@ -633,7 +645,7 @@
     });
 
     // Event listener for remove photos button
-    document.getElementById('remove-photos-btn').addEventListener('click', function() {
+    document.getElementById('remove-photos-btn').addEventListener('click', function () {
         // Clear the file input
         document.getElementById('imgpet').value = '';
         // Clear the image previews
