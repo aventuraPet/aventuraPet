@@ -459,8 +459,7 @@ module.exports = {
     },
     verifyPass: async function (req, res) {
         let idUser = req.session.userAutentication.dataUser[0].id_usuario;
-        console.log(req.body);
-        const passNow = req.body.pass_now
+        const passNow = req.body.password
         let userPass = await passWordHashModel.findAll({
             where: { id_usuario: idUser }
         });
