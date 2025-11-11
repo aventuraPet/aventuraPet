@@ -1,14 +1,48 @@
-<section>
-    <main>
-        <p>digite sua senha atual</p>
-        <input type="password" name="password" id="pass-now">
-        <br>
-        <button id="verificar">virificar</button>
-        <a href="/aventura-pet/configure">VOLTAR</a>
-        <form id="form-change-pass">
+<section class="configure-section">
+    <div class="configure-container">
+        <div class="section-header">
+            <h1 class="section-title">ALTERAR SENHA</h1>
+            <div class="section-divider"></div>
+        </div>
 
-        </form>
-    </main>
+        <div class="configure-content">
+            <div class="configure-card">
+                <div class="card-header">
+                    <i class="fas fa-key card-icon"></i>
+                    <h3>Verificação de Segurança</h3>
+                </div>
+
+                <div class="configure-form">
+                    <div class="form-group">
+                        <label for="pass-now">
+                            <i class="fas fa-lock"></i>
+                            SENHA ATUAL
+                        </label>
+                        <input type="password" name="pass-now" id="pass-now" placeholder="Digite sua senha atual" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="verificar" class="submit-btn">
+                            <i class="fas fa-check"></i>
+                            Verificar
+                        </button>
+                        <a href="/aventura-pet/configure" class="btn secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Voltar
+                        </a>
+                    </div>
+
+                    <form id="form-change-pass" class="change-pass-form">
+                        <div class="warning-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Atenção:</strong> A nova senha deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e símbolo especial.
+                        </div>
+                        <!-- Campos dinâmicos serão inseridos aqui -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 <script>
     document.addEventListener("DOMContentLoaded", function(){
@@ -22,7 +56,7 @@
                     "Content-Type": "application/json"
                 },
                 body:JSON.stringify({
-                    password: pass_now.value
+                    pass_now: pass_now.value
                 })
             })
             .then(response => response.json())
@@ -47,10 +81,16 @@
                 passwordOne.setAttribute("type", responsePassOne.type);
                 passwordOne.setAttribute("name", responsePassOne.name);
                 passwordOne.setAttribute("id", responsePassOne.id);
+                if (responsePassOne.placeholder) {
+                    passwordOne.setAttribute("placeholder", responsePassOne.placeholder);
+                }
 
                 passwordTwo.setAttribute("type", responsePassTwo.type);
                 passwordTwo.setAttribute("name", responsePassTwo.name);
                 passwordTwo.setAttribute("id", responsePassTwo.id);
+                if (responsePassTwo.placeholder) {
+                    passwordTwo.setAttribute("placeholder", responsePassTwo.placeholder);
+                }
 
                 button.setAttribute('type', responseButton.type);
                 button.setAttribute('value', responseButton.value);

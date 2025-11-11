@@ -1,21 +1,342 @@
-<style>
+ <style>
+    /* ===== FULL PAGE LAYOUT ===== */
+    main {
+        background: white !important;
+        min-height: 100vh;
+        padding-top: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Background decorative elements - REMOVED */
+
+    .full-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-xl);
+        min-height: calc(100vh - 80px);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+        padding: var(--spacing-4xl) 0;
+    }
+
+    .content-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-2xl);
+        padding: var(--spacing-3xl);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 1s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .content-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-yellow), var(--secondary-blue));
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header {
+        text-align: center;
+        margin-bottom: var(--spacing-3xl);
+        position: relative;
+    }
+
+    .section-title {
+        font-size: var(--font-size-4xl);
+        font-weight: 800;
+        color: var(--primary-blue);
+        margin-bottom: var(--spacing-md);
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-yellow), var(--light-yellow));
+        border-radius: var(--radius-full);
+    }
+
+    .section-subtitle {
+        font-size: var(--font-size-lg);
+        color: var(--text-light);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .section-divider {
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-yellow), var(--secondary-blue));
+        margin: var(--spacing-lg) auto 0;
+        border-radius: var(--radius-full);
+    }
+
+    /* ===== FORM STYLING ===== */
+    .pet-form {
+        position: relative;
+        z-index: 1;
+    }
+
+    .form-section {
+        margin-bottom: var(--spacing-3xl);
+        padding: var(--spacing-2xl);
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section-title {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: var(--spacing-xl);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+
+    .form-section-title i {
+        color: var(--accent-yellow);
+        font-size: var(--font-size-lg);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-xl);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        position: relative;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--primary-blue);
+        font-size: var(--font-size-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+
+    .form-group label i {
+        color: var(--accent-yellow);
+        font-size: var(--font-size-base);
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: var(--spacing-lg) var(--spacing-xl);
+        border: 2px solid rgba(0, 55, 107, 0.2);
+        border-radius: var(--radius-lg);
+        font-size: var(--font-size-base);
+        font-family: var(--font-primary);
+        transition: all var(--transition-base);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text-dark);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent-yellow);
+        box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2);
+        background: var(--background-white);
+        transform: translateY(-2px);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+    }
+
+    /* ===== FILE INPUT STYLING ===== */
+    .form-group input[type="file"] {
+        padding: var(--spacing-lg) var(--spacing-xl);
+        border: 2px solid rgba(0, 55, 107, 0.2);
+        border-radius: var(--radius-lg);
+        font-size: var(--font-size-base);
+        font-family: var(--font-primary);
+        transition: all var(--transition-base);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text-dark);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-group input[type="file"]:hover {
+        border-color: var(--accent-yellow);
+        background: rgba(255, 204, 0, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2);
+    }
+
+    .form-group input[type="file"]:focus {
+        outline: none;
+        border-color: var(--accent-yellow);
+        box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2);
+        background: var(--background-white);
+    }
+
+    .form-group input[type="file"]::before {
+        content: '📎';
+        position: absolute;
+        left: var(--spacing-lg);
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: var(--font-size-lg);
+        color: var(--primary-blue);
+        pointer-events: none;
+    }
+
+    .form-group input[type="file"]::after {
+        content: 'Escolher arquivos...';
+        position: absolute;
+        right: var(--spacing-lg);
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: var(--font-size-sm);
+        color: var(--text-light);
+        pointer-events: none;
+        font-weight: 500;
+    }
+
+    /* Hide the default file input text */
+    .form-group input[type="file"]::-webkit-file-upload-button {
+        visibility: hidden;
+    }
+
+    .form-group input[type="file"]::-ms-browse {
+        visibility: hidden;
+    }
+
+    /* ===== SUBMIT BUTTON ===== */
+    .submit-section {
+        text-align: center;
+        padding: var(--spacing-2xl);
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-btn {
+        padding: var(--spacing-lg) var(--spacing-2xl);
+        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        color: var(--text-white);
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: var(--font-size-lg);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        transition: all var(--transition-base);
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(0, 55, 107, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .submit-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left var(--transition-slow);
+    }
+
+    .submit-btn:hover::before {
+        left: 100%;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 55, 107, 0.5);
+    }
+
+    .submit-btn i {
+        font-size: var(--font-size-xl);
+        animation: pulse 2s infinite;
+    }
+
+    /* ===== IMAGE PREVIEW GRID ===== */
+    .image-preview-section {
+        margin-top: var(--spacing-3xl);
+        padding: var(--spacing-2xl);
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-title {
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: var(--spacing-xl);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+    }
+
+    .preview-title i {
+        color: var(--accent-yellow);
+    }
+
     .image-preview-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: var(--spacing-lg);
-        margin-top: var(--spacing-3xl);
+        gap: var(--spacing-xl);
+        animation: fadeInUp 1.2s ease-out;
     }
 
     .image-preview-item {
         position: relative;
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-xl);
         overflow: hidden;
-        box-shadow: 0 4px 15px var(--shadow-light);
-        transition: transform var(--transition-base);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        transition: all var(--transition-base);
+        background: var(--background-white);
     }
 
     .image-preview-item:hover {
-        transform: translateY(-5px);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     .image-preview-item img {
@@ -23,26 +344,20 @@
         height: 200px;
         object-fit: cover;
         display: block;
+        transition: transform var(--transition-base);
     }
 
-    .image-preview-item::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
-        pointer-events: none;
+    .image-preview-item:hover img {
+        transform: scale(1.05);
     }
 
     .image-remove {
         position: absolute;
-        top: var(--spacing-sm);
-        right: var(--spacing-sm);
-        width: 30px;
-        height: 30px;
-        background: rgba(255, 0, 0, 0.8);
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, rgba(255, 0, 0, 0.9), rgba(220, 20, 60, 0.9));
         color: white;
         border: none;
         border-radius: var(--radius-full);
@@ -50,72 +365,171 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        font-size: var(--font-size-sm);
-        transition: background var(--transition-base);
+        font-size: var(--font-size-base);
+        transition: all var(--transition-base);
         z-index: 10;
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
     }
 
     .image-remove:hover {
-        background: rgba(255, 0, 0, 1);
+        background: linear-gradient(135deg, rgba(255, 0, 0, 1), rgba(220, 20, 60, 1));
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
     }
 
+
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
     @media (max-width: 768px) {
-        .image-preview-grid {
-            grid-template-columns: 1fr;
+        .full-container {
+            padding: 0 var(--spacing-md);
+        }
+
+        .main-content {
+            padding: var(--spacing-xl) 0;
+        }
+
+        .content-wrapper {
+            padding: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: var(--font-size-3xl);
         }
 
         .form-row {
             grid-template-columns: 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .image-preview-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .content-wrapper {
+            padding: var(--spacing-lg);
+        }
+
+        .form-section {
+            padding: var(--spacing-lg);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: var(--font-size-base);
+        }
+
+        .image-preview-grid {
+            grid-template-columns: 1fr;
         }
     }
 </style>
-<main class="animate-fade-in-up">
+<main>
     <%- include('../layout/msg'); -%>
 
-    <section class="section-padding">
-        <div class="container">
-            <div class="section-header">
-                <h1 class="section-title">Adicionar Novo Pet</h1>
-                <p class="section-subtitle">Preencha os dados do seu pet e adicione fotos para encontrar um lar amoroso</p>
-                <div class="section-divider"></div>
-            </div>
+    <div class="full-container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="section-header">
+                    <h1 class="section-title">Adicionar Novo Pet</h1>
+                    <p class="section-subtitle">Preencha os dados do seu pet e adicione fotos para encontrar um lar amoroso</p>
+                    <div class="section-divider"></div>
+                </div>
 
-            <div class="contact-form-wrapper">
-                <form action="/aventura-pet/add-img" method="post" enctype="multipart/form-data" class="contact-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="namepet">Nome do Pet</label>
-                            <input type="text" name="namepet" id="namepet" required placeholder="Digite o nome do pet">
+                <form action="/aventura-pet/add-img" method="post" enctype="multipart/form-data" class="pet-form">
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informações Básicas
+                        </h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="namepet"><i class="fas fa-tag"></i>Nome do Pet</label>
+                                <input type="text" name="namepet" id="namepet" required placeholder="Digite o nome do pet">
+                            </div>
+                            <div class="form-group">
+                                <label for="idade"><i class="fas fa-birthday-cake"></i>Idade</label>
+                                <input type="number" name="idade" id="idade" min="0" max="30" required placeholder="Idade em anos">
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Characteristics Section -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-heart"></i>
+                            Características
+                        </h2>
                         <div class="form-group">
-                            <label for="idade">Idade</label>
-                            <input type="number" name="idade" id="idade" min="0" max="30" required placeholder="Idade em anos">
+                            <label for="caracteristica"><i class="fas fa-edit"></i>Descrição Detalhada</label>
+                            <textarea name="caracteristica" id="caracteristica" rows="4" required placeholder="Descreva a personalidade, porte, necessidades especiais, comportamento com outros animais e crianças, etc."></textarea>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="caracteristica">Características</label>
-                        <textarea name="caracteristica" id="caracteristica" rows="4" required placeholder="Descreva as características do pet (personalidade, porte, etc.)"></textarea>
+                    <!-- Photos Section -->
+                    <div class="form-section">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-camera"></i>
+                            Fotos do Pet
+                        </h2>
+                        <div class="form-group">
+                            <label for="imgpet"><i class="fas fa-images"></i>Selecione as imagens</label>
+                            <input type="file" name="imgpet" id="imgpet" multiple accept="image/*" required>
+                            <small style="display: block; margin-top: var(--spacing-sm); color: var(--text-light); font-size: var(--font-size-sm);">
+                                <i class="fas fa-info-circle"></i> Selecione até 3 imagens de alta qualidade (JPG, PNG, GIF)
+                            </small>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="imgpet">Imagens do Pet</label>
-                        <input type="file" name="imgpet" id="imgpet" multiple accept="image/*" required>
-                        <small style="color: var(--text-light); font-size: var(--font-size-sm);">Selecione até 3 imagens. Formatos aceitos: JPG, PNG, GIF</small>
+                    <!-- Submit Section -->
+                    <div class="submit-section">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paw"></i>
+                            Adicionar Pet
+                        </button>
                     </div>
-
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-paw"></i>
-                        Adicionar Pet
-                    </button>
                 </form>
-            </div>
 
-            <div id="imagens" class="image-preview-grid animate-fade-in-up" style="margin-top: var(--spacing-3xl);">
-                <!-- Imagens serão inseridas aqui via JavaScript -->
+                <!-- Image Preview Section -->
+                <div class="image-preview-section">
+                    <h3 class="preview-title">
+                        <i class="fas fa-images"></i>
+                        Pré-visualização das Imagens
+                    </h3>
+                    <div id="imagens" class="image-preview-grid">
+                        <!-- Imagens serão inseridas aqui via JavaScript -->
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 </main>
 
 

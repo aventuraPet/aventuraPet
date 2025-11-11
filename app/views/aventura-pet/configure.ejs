@@ -1,22 +1,65 @@
-<section>
+<section class="configure-section">
     <% console.log(data) %>
-    <main>
-        <h3>CONFIGURAÇÃO DE USUARIO</h3>
-        <form action="/aventura-pet/configure" method="post">
-            <h4>CONTATO</h4>
-            <label for="telefone">telefone</label>
-            <input type="text" name="telefone" id="telefone" value="<%- data[0].telefone %>">
-            <label for="email">email</label>
-            <input type="email" name="email" maxlength="100" id="email" value="<%- data[0].email %>">
-            <label for="cep">cep</label>
-            <input type="text" name="cep" id="cep" value="<%- data[0].cep %>">
-            <br>
-          
-            <input type="submit" value="salvar">
-            <a href="/aventura-pet">cancelar</a>
+    <div class="configure-container">
+        <div class="section-header">
+            <h2 class="section-title">CONFIGURAÇÃO DE USUÁRIO</h2>
+            <div class="section-divider"></div>
+        </div>
 
-            <br>
-              <a href="/aventura-pet/change-pass">anterar senha</a>
-        </form>
-    </main>
+        <div class="configure-content">
+            <div class="configure-card">
+                <div class="card-header">
+                    <i class="fas fa-user-cog card-icon"></i>
+                    <h3>Informações de Contato</h3>
+                </div>
+
+                <form action="/aventura-pet/configure" method="post" class="configure-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="telefone">
+                                <i class="fas fa-phone"></i>
+                                Telefone
+                            </label>
+                            <input type="text" name="telefone" id="telefone" value="<%- data[0].telefone %>" placeholder="Digite seu telefone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">
+                                <i class="fas fa-envelope"></i>
+                                E-mail
+                            </label>
+                            <input type="email" name="email" id="email" value="<%- data[0].email %>" placeholder="Digite seu e-mail" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cep">
+                            <i class="fas fa-map-marker-alt"></i>
+                            CEP
+                        </label>
+                        <input type="text" name="cep" id="cep" value="<%- data[0].cep %>" placeholder="Digite seu CEP" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-save"></i>
+                            Salvar Alterações
+                        </button>
+
+                        <a href="/aventura-pet" class="btn secondary">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="additional-actions">
+                <a href="/aventura-pet/change-pass" class="action-link">
+                    <i class="fas fa-key"></i>
+                    Alterar Senha
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
