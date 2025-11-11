@@ -1,7 +1,7 @@
 <section>
     <main>
         <p>digite sua senha atual</p>
-        <input type="password" name="pass-now" id="pass-now">
+        <input type="password" name="password" id="pass-now">
         <br>
         <button id="verificar">virificar</button>
         <a href="/aventura-pet/configure">VOLTAR</a>
@@ -22,7 +22,7 @@
                     "Content-Type": "application/json"
                 },
                 body:JSON.stringify({
-                    pass_now: pass_now.value
+                    password: pass_now.value
                 })
             })
             .then(response => response.json())

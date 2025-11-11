@@ -70,13 +70,11 @@ aventuraPetRouter.post('/aventura-pet/add-img',
     }),
     function (req, res) {
         const errorResult = validationResult(req);
-
-
         if (!errorResult.isEmpty()) {
             if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "";
             }
-            req.session.strErrorMsg = "nome invalido tente novamente"
+            req.session.strErrorMsg = "erro nome, idade, caracteristica ou imagem invalido tente novamente"
 
             return res.redirect('/aventura-pet')
         }
@@ -84,43 +82,95 @@ aventuraPetRouter.post('/aventura-pet/add-img',
 
         aventuraPetController.insertImgPet(req, res);
 
-    });
-
-aventuraPetRouter.get('/aventura-pet/get-img', function (req, res) {
-
-    aventuraPetController.getImgPet(req, res, 1)
-});
-
-aventuraPetRouter.get('/aventura-pet/view-pets', function (req, res) {
-    //colocar a autenticação no futuro
-    if (!req.session.offsetPet) {
-
-        req.session.offsetPet = 0;
-        
     }
+);
 
+aventuraPetRouter.get('/aventura-pet/view-pets', isAutentication, function (req, res) {
+
+    if (!req.session.offsetPet) {
+        req.session.offsetPet = 0;
+    }
     req.session.offsetPet = 0;
     aventuraPetController.viewPets(req, res);
 });
 
-aventuraPetRouter.get('/aventura-pet/view-pets/dislike/:idUserPet', function (req, res) {
-    //colocara a validação do id 
-    //colocar a autenticação
-    console.log(req.params);
+aventuraPetRouter.get('/aventura-pet/view-pets/dislike/:idUserPet',
+    isAutentication,
+    checkSchema({
+        idUserPet: {
+            in: ['query'],
+            escape: true,
+            trim: true,
+            notEmpty: true,
+            errorMessage: "error query invalido",
+            isNumeric: true
+        }
+    }),
+    function (req, res) {
+        const errorResult = validationResult(req);
+        if (!errorResult.isEmpty()) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "";
+            }
+            req.session.strErrorMsg = "error query invalido"
 
-    aventuraPetController.dislike(req, res);
-});
+            return res.redirect('/aventura-pet');
+        }
+        aventuraPetController.dislike(req, res);
+    }
+);
 
-aventuraPetRouter.get('/aventura-pet/view-pets/like/:idUserPet', function (req, res) {
-    //console.log(req.params.idUserPet);
-    aventuraPetController.like(req, res);
-});
-aventuraPetRouter.get('/aventura-pet/mark/:idUserPet', function (req, res) {
-    //console.log(req.params.idUserPet);
-    aventuraPetController.mark(req, res);
-});
+aventuraPetRouter.get('/aventura-pet/view-pets/like/:idUserPet',
+    isAutentication,
+    checkSchema({
+        idUserPet: {
+            in: ['query'],
+            escape: true,
+            trim: true,
+            notEmpty: true,
+            errorMessage: "error query invalido",
+            isNumeric: true
+        }
+    }),
+    function (req, res) {
+        const errorResult = validationResult(req);
+        if (!errorResult.isEmpty()) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "";
+            }
+            req.session.strErrorMsg = "error query invalido"
 
-aventuraPetRouter.get('/aventura-pet/my-pets', function(req, res){
+            return res.redirect('/aventura-pet');
+        }
+        aventuraPetController.like(req, res);
+    });
+aventuraPetRouter.get('/aventura-pet/mark/:idUserPet',
+    isAutentication,
+    checkSchema({
+        idUserPet: {
+            in: ['query'],
+            escape: true,
+            trim: true,
+            notEmpty: true,
+            errorMessage: "error query invalido",
+            isNumeric: true
+        }
+    }),
+    function (req, res) {
+        const errorResult = validationResult(req);
+        if (!errorResult.isEmpty()) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "";
+            }
+            req.session.strErrorMsg = "error query invalido"
+
+            return res.redirect('/aventura-pet');
+        }
+
+        aventuraPetController.mark(req, res);
+    });
+
+aventuraPetRouter.get('/aventura-pet/my-pets', isAutentication, function (req, res) {
     aventuraPetController.myPets(req, res);
 })
 
@@ -128,29 +178,162 @@ aventuraPetRouter.get('/aventura-pet/favorite', isAutentication, function (req, 
     aventuraPetController.favoritePage(req, res);
 });
 
-aventuraPetRouter.get('/aventura-pet/distance', function(req, res){
+aventuraPetRouter.get('/aventura-pet/distance', isAutentication, function (req, res) {
     aventuraPetController.configDistancePage(req, res);
 });
-aventuraPetRouter.post('/aventura-pet/distance', function(req, res){
-    aventuraPetController.configDistanceUpdate(req, res);
-});
+aventuraPetRouter.post('/aventura-pet/distance',
+    isAutentication,
+    checkSchema({
+        distancia: {
+            in: ['body'],
+            escape: true,
+            trim: true,
+            notEmpty: true,
+            errorMessage: "distancia invalida"
+        }
+    }),
+    function (req, res) {
+        if (!errorResult.isEmpty()) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "";
+            }
+            req.session.strErrorMsg = "distancia invalida"
 
-aventuraPetRouter.get('/aventura-pet/configure', function(req,res){
+            return res.redirect('/aventura-pet')
+        }
+        aventuraPetController.configDistanceUpdate(req, res);
+    });
+
+aventuraPetRouter.get('/aventura-pet/configure', isAutentication, function (req, res) {
     aventuraPetController.configurePage(req, res);
 });
 
-aventuraPetRouter.post('/aventura-pet/configure', function(req,res){
-    aventuraPetController.configureUpdate(req, res);
-});
-aventuraPetRouter.get('/aventura-pet/change-pass', function(req,res){
+aventuraPetRouter.post('/aventura-pet/configure',
+    isAutentication,
+    checkSchema({
+        telefone: {
+            in: ['body'],
+            errorMessage: "telefone invalido",
+            trim: true,
+            escape: true,
+            notEmpty: true,
+            isNumeric: true,
+            isLength: {
+                options: {
+                    min: 11,
+                    max: 20
+                }
+            }
+        },
+        email: {
+            in: ['body'],
+            errorMessage: "email invalido",
+            trim: true,
+            escape: true,
+            notEmpty: true,
+            isEmail: true,
+            isLength: {
+                options: {
+                    max: 100
+                }
+            }
+        },
+        cep: {
+            in: ['body'],
+            errorMessage: "cep invalido",
+            trim: true,
+            escape: true,
+            notEmpty: true,
+            isNumeric: true,
+            isLength: {
+                options: {
+                    min: 8,
+                    max: 8
+                }
+            }
+        }
+    }),
+    function (req, res) {
+        const errorResult = validationResult(req);
+        if (!errorResult.isEmpty()) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "";
+            }
+            req.session.strErrorMsg = "telefone, cep ou email estao invalido tente novamente"
+
+            return res.redirect('/aventura-pet');
+        }
+        aventuraPetController.configureUpdate(req, res);
+    });
+aventuraPetRouter.get('/aventura-pet/change-pass', isAutentication, function (req, res) {
     aventuraPetController.changePassPage(req, res);
 });
-aventuraPetRouter.post('/aventura-pet/change-pass', function(req,res){
-    aventuraPetController.verifyPass(req, res);
-});
-aventuraPetRouter.post('/aventura-pet/new-pass', function(req,res){
-    aventuraPetController.newPass(req, res);
-});
+aventuraPetRouter.post('/aventura-pet/change-pass',
+    isAutentication,
+    checkSchema({
+        password: {
+            in: ['body'],
+            isLength: {
+                options: { min: 8 }
+            },
+            matches: {
+                options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/
+            },
+            trim: true,
+            escape: true
+        }
+    }),
+    function (req, res) {
+        
+        const errorResult = validationResult(req);
+        if (!errorResult.isEmpty()) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "";
+            }
+            req.session.strErrorMsg = "senha invalida"
+
+            return res.redirect('/aventura-pet');
+        }
+        aventuraPetController.verifyPass(req, res);
+    });
+aventuraPetRouter.post('/aventura-pet/new-pass',
+    isAutentication,
+    checkSchema({
+        password: {
+            in: ['body'],
+            isLength: {
+                options: { min: 8 }
+            },
+            matches: {
+                options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/
+            },
+            trim: true,
+            escape: true
+        },
+        verifyPassword: {
+            in: ['body'],
+            isLength: {
+                options: { min: 8 }
+            },
+            matches: {
+                options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/
+            },
+            trim: true,
+            escape: true
+        }
+    }),
+    function (req, res) {
+        const errorResult = validationResult(req);
+        if (!errorResult.isEmpty()) {
+            if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "";
+            }
+            req.session.strErrorMsg = "senha invalida tente novamente"
+
+            return res.redirect('/aventura-pet')
+        }
+        aventuraPetController.newPass(req, res);
+    });
 
 module.exports = aventuraPetRouter;
 

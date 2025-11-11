@@ -2,6 +2,7 @@ const msgSession = require('../libs/msgSession');
 const userModel = require('../model/models/userModel');
 const contactUserModel = require('../model/models/contactUserModel');
 const passwordHashModel = require('../model/models/passwordHashModel');
+const configUserModel = require('../model/models/configUserModel');
 const bcrypt = require('bcryptjs');
 
 module.exports = {
@@ -28,13 +29,18 @@ module.exports = {
 
             let idNewUser = newUser.id_usuario;
 
-            // For now, we'll use a default phone and cep since they're not in the slider
+            
             await contactUserModel.create({
                 id_usuario: idNewUser,
                 telefone: phone,
                 cep: cep, 
                 email: email,
                 pet_visualizado: '[]'
+            });
+
+            await configUserModel.create({
+                id_usuario: idNewUser,
+                distancia: 10
             });
 
             let salt = bcrypt.genSaltSync(10);
