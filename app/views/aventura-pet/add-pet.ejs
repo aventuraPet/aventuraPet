@@ -51,6 +51,7 @@
         text-align: center;
         margin-bottom: var(--spacing-3xl);
         position: relative;
+        border-radius: 25px;
     }
 
     .section-title {
@@ -60,6 +61,7 @@
         margin-bottom: var(--spacing-md);
         position: relative;
         display: inline-block;
+        color: white;
     }
 
     .section-title::after {
@@ -80,6 +82,7 @@
         max-width: 600px;
         margin: 0 auto;
         line-height: 1.6;
+        color: white;
     }
 
     .section-divider {
@@ -190,6 +193,7 @@
         cursor: pointer;
         position: relative;
         overflow: hidden;
+        text-indent: -120px; /* Move default text to the left to avoid overlap */
     }
 
     .form-group input[type="file"]:hover {
@@ -377,6 +381,52 @@
         box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
     }
 
+    /* ===== REMOVE PHOTOS BUTTON ===== */
+    .remove-photos-btn {
+        margin-top: var(--spacing-lg);
+        padding: var(--spacing-md) var(--spacing-xl);
+        background: linear-gradient(135deg, rgba(255, 0, 0, 0.9), rgba(220, 20, 60, 0.9));
+        color: var(--text-white);
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: var(--font-size-base);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        transition: all var(--transition-base);
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .remove-photos-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left var(--transition-slow);
+    }
+
+    .remove-photos-btn:hover::before {
+        left: 100%;
+    }
+
+    .remove-photos-btn:hover {
+        background: linear-gradient(135deg, rgba(255, 0, 0, 1), rgba(220, 20, 60, 1));
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    }
+
+    .remove-photos-btn i {
+        font-size: var(--font-size-lg);
+    }
+
 
 
     /* ===== ANIMATIONS ===== */
@@ -503,8 +553,12 @@
                             <label for="imgpet"><i class="fas fa-images"></i>Selecione as imagens</label>
                             <input type="file" name="imgpet" id="imgpet" multiple accept="image/*" required>
                             <small style="display: block; margin-top: var(--spacing-sm); color: var(--text-light); font-size: var(--font-size-sm);">
-                                <i class="fas fa-info-circle"></i> Selecione até 3 imagens de alta qualidade (JPG, PNG, GIF)
+                                <i class="fas fa-info-circle"></i> Selecione uma imagem de alta qualidade (JPG, PNG, GIF)
                             </small>
+                            <button type="button" id="remove-photos-btn" class="remove-photos-btn">
+                                <i class="fas fa-trash"></i>
+                                Remover Fotos Selecionadas
+                            </button>
                         </div>
                     </div>
 
@@ -576,6 +630,14 @@
 
         document.getElementById('imgpet').value = "";
         alert("quantidade de imagens maxima permitida é 3");
+    });
+
+    // Event listener for remove photos button
+    document.getElementById('remove-photos-btn').addEventListener('click', function() {
+        // Clear the file input
+        document.getElementById('imgpet').value = '';
+        // Clear the image previews
+        document.getElementById('imagens').innerHTML = '';
     });
 
 </script>

@@ -62,6 +62,7 @@
             .then(response => response.json())
             .then(data =>{
                 if(!data.status){
+                    
                     var elementMsg = document.createElement("p");
                     elementMsg.setAttribute("class", "msgError");
                     elementMsg.textContent = data.msg;
@@ -140,6 +141,5 @@
                
             }
         });
-
     });
 </script>
