@@ -284,15 +284,15 @@ aventuraPetRouter.post('/aventura-pet/change-pass',
         }
     }),
     function (req, res) {
-        
+        console.log(req.body);
         const errorResult = validationResult(req);
         if (!errorResult.isEmpty()) {
             if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "";
             }
             req.session.strErrorMsg = "senha invalida"
-
-            return res.redirect('/aventura-pet');
+            
+            return res.status(200).send({msg: errorResult});
         }
         aventuraPetController.verifyPass(req, res);
     });
