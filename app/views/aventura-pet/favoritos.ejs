@@ -5,7 +5,7 @@
                         <div class="profile-image">
                               <img src="data:image/png;base64, <%= data.img %>" />
                         </div>
-                        <% //console.log(data) %>
+                        <% console.log(data) %>
                               <div class="profile-info">
                                     <div class="top-info">
                                           <h2>
@@ -34,7 +34,7 @@
 
                                     <a href="/aventura-pet/view-pets/like/<%= data.idUserPet %>" id="like"
                                           class="btn like">💚</a>
-                                    <a href="https://wa.me/55<%= data.telefone %>" id="send" class="btn send">📨</a>
+                                    <a href="https://wa.me/55<%= data.telefone.replace(/[()\s-]/g,'')%>?text=ola!gostaria de adotar seu pet <%= data.nome_pet %> que localizei na plataforma aventura-pet" id="send" target="_blank" class="btn send">📨</a>
                               </div>
                   </div>
                   <%})%>

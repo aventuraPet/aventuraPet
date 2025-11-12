@@ -13,7 +13,7 @@ CREATE TABLE contato_usuario(
     id_contato_usuario INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
     telefone VARCHAR(20),
-    cep VARCHAR(8),
+    cep VARCHAR(9),
     email VARCHAR(100),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
