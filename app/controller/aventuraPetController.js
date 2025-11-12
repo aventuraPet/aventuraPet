@@ -71,7 +71,7 @@ module.exports = {
         //petVisualizado.push({ id_user_pet: 7, pet_like: false });
         let arrContactUser = await this.getContactUser(idUser);
         let arrConfigUser = await this.getConfigUser(idUser);
-
+        console.log(arrConfigUser);
         if (!req.session.offsetPet) {
 
             req.session.offsetPet = 0;
@@ -95,8 +95,8 @@ module.exports = {
 
 
 
-            //console.log(petResult.result);
-            //console.log(distanceResult.result);
+            //console.log(petResult);
+            //console.log(distanceResult);
 
             var result = '';
 
@@ -120,7 +120,7 @@ module.exports = {
             //se o pet nao foi visualizado e nao esta dentro da distancia -> true e busca o proximo
             //!false->true && !false->true
             if (!petResult.result && !distanceResult.result) {
-                console.log("!false->true && !false->true")
+                //console.log("!false->true && !false->true")
                 result = true;
                 req.session.offsetPet++;
             }
@@ -209,8 +209,8 @@ module.exports = {
                 INNER JOIN image_pet ON pet_user.id_user_pet = image_pet.id_user_pet
                 WHERE pet_user.disponivel = 1 ORDER BY pet_user.id_user_pet DESC `;
 
-        if (petVisualizado.length == 0) {
-            console.log(petVisualizado);
+        if (petVisualizado.length == 0 && offset == 0) {
+            //console.log(petVisualizado);
             var notViewUserPet = await sequelize.query(
                 query + `LIMIT 0,1`,
                 { type: QueryTypes.SELECT }
@@ -221,6 +221,7 @@ module.exports = {
                 { type: QueryTypes.SELECT }
             );
         }
+        
         if (notViewUserPet.length == 0) {
 
             return false;
@@ -247,13 +248,14 @@ module.exports = {
         let longitudeUser = dataSerachCEPUser.longitude;
 
         let dataSerachCEPUserPet = await this.promisseGetLatLong(cepPet)
+        console.log(dataSerachCEPUserPet)
         let latitudeUserPet = dataSerachCEPUserPet.latitude;
         let longitudeUserPet = dataSerachCEPUserPet.longitude;
         let cidadeUserPet = dataSerachCEPUserPet.cidade.nome
         let distance = calcDistance(latitudeUser, longitudeUser, latitudeUserPet, longitudeUserPet);
         //console.log(distance)
         //console.log(dataSerachCEPUser)
-        //console.log(dataSerachCEPUserPet)
+        
         if (distance <= configDistanceUser) {
             return { result: true, cidade: cidadeUserPet, distance: distance };
         }
@@ -275,7 +277,7 @@ module.exports = {
     },
 
     dislike: async function (req, res) {
-        let idUserPet = req.params.idUserPet;
+        let idUserPet = req.query.idUserPet;
         let idUser = req.session.userAutentication.dataUser[0].id_usuario;
 
         let petVisualizado = req.session.userAutentication.dataUser[0].pet_visualizado;
@@ -292,7 +294,8 @@ module.exports = {
         res.redirect('/aventura-pet/view-pets/')
     },
     like: async function (req, res) {
-        let idUserPet = req.params.idUserPet;
+        let idUserPet = req.query.idUserPet;
+        console.log(idUserPet);
         let idUser = req.session.userAutentication.dataUser[0].id_usuario;
 
         let petVisualizado = req.session.userAutentication.dataUser[0].pet_visualizado;
@@ -317,8 +320,17 @@ module.exports = {
 
         let petUser = await petUserModel.findAll({ where: { id_usuario: idUser } });
         let arrPetuser = JSON.parse(JSON.stringify(petUser, null));
+        if(arrPetuser.length == 0){
+           if (!req.session.strErrorMsg) {
+                req.session.strErrorMsg = "voce ainda nao tem pets";
+            }
+
+           return res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
+        }
+       
         //arrPetuser.push(await this.getMyPets(arrPetuser));
         let arrImgPet = await this.getMyPets(arrPetuser);
+       
         //funcao para incluir as imagem de acordo com cada pet
         arrPetuser.forEach(pet => {
             arrImgPet.forEach(img => {
@@ -351,7 +363,7 @@ module.exports = {
         //funcao que marca pet como adotado
         await petUserModel.update(
             { disponivel: false },
-            { where: { id_user_pet: req.params.idUserPet } });
+            { where: { id_user_pet: req.query.idUserPet } });
 
         if (!req.session.strSuccessMsg) {
             req.session.strSuccessMsg = "pet marcado com sucesso";
@@ -378,7 +390,7 @@ module.exports = {
             req.session.strSuccessMsg = "distancia alterada com sucesso";
         }
         this.configDistancePage(req, res);
-        msgSession.cleanMsgSuccess();
+        
 
     },
     favoritePage: async function (req, res) {
@@ -388,22 +400,25 @@ module.exports = {
 
         let arrUser = JSON.parse(JSON.stringify(user, null));
         let arrPetVisualizado = JSON.parse(arrUser[0].pet_visualizado);
-
+        console.log(arrPetVisualizado)
         if (arrPetVisualizado.length == 0) {
             if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "voce ainda nao tem pets favorito";
             }
 
-            res.render('aventura-pet/index', { fileName: { menu: "main", section: 'favoritos' }, msgError: msgSession.getMsgError(req) });
+           return res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
         }
 
         let arrPet = await this.getPetUser(arrPetVisualizado);
-
+      
         for (const pet of arrPet) {
             const imgPet = await imagePetModel.findAll({ where: { id_user_pet: pet[0].id_user_pet } });
+            const u = await contactUserModel.findAll({where:{id_usuario: pet[0].id_usuario}});
+            const arrU = JSON.parse(JSON.stringify(u, null));
             const arrImgPet = JSON.parse(JSON.stringify(imgPet, null));
             pet[0].img = Buffer.from(arrImgPet[0].imagem).toString("base64");
-
+            pet[0].telefone = arrU[0].telefone;
+           
         };
         let data = [];
 

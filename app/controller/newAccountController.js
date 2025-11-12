@@ -24,18 +24,20 @@ module.exports = {
             // Create new user
             let newUser = await userModel.create({
                 nome_usuario: user_name,
-                tipo_usuario: 1
+                tipo_usuario: 1,
+                pet_visualizado: '[]'    
             });
 
             let idNewUser = newUser.id_usuario;
 
+            var cepSanitizado = cep.replace(/-/g, "");
             
             await contactUserModel.create({
                 id_usuario: idNewUser,
                 telefone: phone,
-                cep: cep, 
+                cep: cepSanitizado, 
                 email: email,
-                pet_visualizado: '[]'
+                          
             });
 
             await configUserModel.create({

@@ -75,7 +75,7 @@ aventuraPetRouter.post('/aventura-pet/add-img',
                 req.session.strErrorMsg = "";
             }
             req.session.strErrorMsg = "erro nome, idade, caracteristica ou imagem invalido tente novamente"
-
+            
             return res.redirect('/aventura-pet')
         }
 
@@ -94,7 +94,7 @@ aventuraPetRouter.get('/aventura-pet/view-pets', isAutentication, function (req,
     aventuraPetController.viewPets(req, res);
 });
 
-aventuraPetRouter.get('/aventura-pet/view-pets/dislike/:idUserPet',
+aventuraPetRouter.get('/aventura-pet/view-pets/dislike',
     isAutentication,
     checkSchema({
         idUserPet: {
@@ -120,7 +120,7 @@ aventuraPetRouter.get('/aventura-pet/view-pets/dislike/:idUserPet',
     }
 );
 
-aventuraPetRouter.get('/aventura-pet/view-pets/like/:idUserPet',
+aventuraPetRouter.get('/aventura-pet/view-pets/like',
     isAutentication,
     checkSchema({
         idUserPet: {
@@ -134,6 +134,7 @@ aventuraPetRouter.get('/aventura-pet/view-pets/like/:idUserPet',
     }),
     function (req, res) {
         const errorResult = validationResult(req);
+       
         if (!errorResult.isEmpty()) {
             if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "";
@@ -144,7 +145,7 @@ aventuraPetRouter.get('/aventura-pet/view-pets/like/:idUserPet',
         }
         aventuraPetController.like(req, res);
     });
-aventuraPetRouter.get('/aventura-pet/mark/:idUserPet',
+aventuraPetRouter.get('/aventura-pet/mark',
     isAutentication,
     checkSchema({
         idUserPet: {
@@ -163,7 +164,7 @@ aventuraPetRouter.get('/aventura-pet/mark/:idUserPet',
                 req.session.strErrorMsg = "";
             }
             req.session.strErrorMsg = "error query invalido"
-
+            console.log(req.query);
             return res.redirect('/aventura-pet');
         }
 
@@ -193,6 +194,7 @@ aventuraPetRouter.post('/aventura-pet/distance',
         }
     }),
     function (req, res) {
+       const errorResult = validationResult(req);
         if (!errorResult.isEmpty()) {
             if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "";

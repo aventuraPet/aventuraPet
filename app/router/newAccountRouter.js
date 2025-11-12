@@ -1,16 +1,16 @@
 const express = require('express');
 const newAccountRouter = express.Router();
 const newAccountController = require('../controller/newAccountController');
-const {checkSchema, validationResult} = require('express-validator');
+const { checkSchema, validationResult } = require('express-validator');
 
-newAccountRouter.get('/new-account', function(req, res){
+newAccountRouter.get('/new-account', function (req, res) {
     newAccountController.index(req, res);
 });
 
 newAccountRouter.post('/new-account/create',
     checkSchema({
-        user_name:{
-            in:['body'],
+        user_name: {
+            in: ['body'],
             escape: true,
             trim: true,
             errorMessage: "Nome inválido, tente novamente",
@@ -35,12 +35,12 @@ newAccountRouter.post('/new-account/create',
                 }
             }
         },
-        password:{
-            in:['body'],
-            isLength:{
-                options:{min:8}
+        password: {
+            in: ['body'],
+            isLength: {
+                options: { min: 8 }
             },
-            matches:{
+            matches: {
                 options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/
             },
             trim: true,
@@ -55,11 +55,11 @@ newAccountRouter.post('/new-account/create',
             }
         }
     }),
-    function(req, res){
+    function (req, res) {
         let errorResult = validationResult(req);
-        if(!errorResult.isEmpty()){
+        if (!errorResult.isEmpty()) {
             let errorValidator = errorResult.array();
-            if(!req.session.strErrorMsg){
+            if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "";
             }
             req.session.strErrorMsg = errorValidator[0].msg;
@@ -67,16 +67,16 @@ newAccountRouter.post('/new-account/create',
         }
 
         newAccountController.createAccount(req, res);
-});
+    });
 
-newAccountRouter.get('/new-account/name', function(req, res){
+newAccountRouter.get('/new-account/name', function (req, res) {
     newAccountController.namePage(req, res);
 });
 
 newAccountRouter.post('/new-account/contact',
     checkSchema({
-        user_name:{
-            in:['body'],
+        user_name: {
+            in: ['body'],
             escape: true,
             trim: true,
             errorMessage: "nome invalido tente novamente",
@@ -89,29 +89,29 @@ newAccountRouter.post('/new-account/contact',
             }
         }
     }),
-    function(req, res){
+    function (req, res) {
         let errorResult = validationResult(req);
-        if(!errorResult.isEmpty()){
+        if (!errorResult.isEmpty()) {
             let errorValidator = errorResult.array();
             //cria variavel de erro na sessao do usuario
-            if(!req.session.strErrorMsg){
+            if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "";
             }
-            
+
             req.session.strErrorMsg = errorValidator[0].msg;
             return res.redirect('/new-account/name');
         }
 
         //cria variavel do usuaro na sessao
-        if(!req.session.newAccount){
+        if (!req.session.newAccount) {
             req.session.newAccount = [];
         }
         //salva dados na sessao
-        req.session.newAccount.push({user_name: req.body.user_name});
+        req.session.newAccount.push({ user_name: req.body.user_name });
         newAccountController.contactPage(req, res);
-});
+    });
 
-newAccountRouter.get('/new-account/contact', function(req, res){
+newAccountRouter.get('/new-account/contact', function (req, res) {
     newAccountController.contactPage(req, res);
 })
 
@@ -154,12 +154,13 @@ newAccountRouter.post('/new-account/password',
             isLength: {
                 options: {
                     min: 8,
-                    max: 8
+                    max: 9
                 }
             }
+
         }
     }),
-    function(req, res){
+    function (req, res) {
         let errorResult = validationResult(req);
         if (!errorResult.isEmpty()) {
             if (!req.session.strErrorMsg) {
@@ -179,28 +180,28 @@ newAccountRouter.post('/new-account/password',
 
         newAccountController.passwordPage(req, res);
 
-});
-newAccountRouter.get('/new-account/password', function(req, res){
+    });
+newAccountRouter.get('/new-account/password', function (req, res) {
     newAccountController.passwordPage(req, res)
 })
-newAccountRouter.get('/new-account', function(req, res){
+newAccountRouter.get('/new-account', function (req, res) {
     newAccountController.passwordPage(req, res);
 });
 newAccountRouter.post('/new-account/login',
     checkSchema({
-        password:{
-            in:['body'],
-            isLength:{
-                options:{min:8}
+        password: {
+            in: ['body'],
+            isLength: {
+                options: { min: 8 }
             },
-            matches:{
+            matches: {
                 options: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/
             },
             trim: true,
             escape: true
         }
     }),
-    function(req, res){
+    function (req, res) {
         let errorResult = validationResult(req);
         if (!errorResult.isEmpty()) {
             if (!req.session.strErrorMsg) {
@@ -214,11 +215,11 @@ newAccountRouter.post('/new-account/login',
             password: req.body.password
         });
 
-       
+
 
         newAccountController.verifyData(req, res);
 
-});
+    });
 
 
 

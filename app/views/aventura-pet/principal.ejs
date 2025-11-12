@@ -12,7 +12,7 @@
                 <p class="location">📍 <%= data[0].cidade %></p>
             </div>
 
-            
+            <input type="hidden" value="<%= data[0].idUserPet %>" id="idUserPet">
 
             <div class="caracteristicas">
                 <p><strong>Caracteristicas:</strong> <%= data[0].caracteristica %></p>
@@ -21,11 +21,28 @@
         </div>
 
         <div class="botoes">
-          
-            <a href="/aventura-pet/view-pets/dislike/<%= data[0].idUserPet %>" id="dislike" class="btn dislike">✖️</a>
-         
-            <a href="/aventura-pet/view-pets/like/<%= data[0].idUserPet %>" id="like" class="btn like">💚</a>
-            <a href="https://wa.me/55<%= data[0].telefone %>" id="send" class="btn send">📨</a>
+            
+            <a href="/aventura-pet/view-pets/dislike?idUserPet=<%= data[0].idUserPet %>" id="dislike" class="btn dislike">✖️</a>
+            
+            <a href="/aventura-pet/view-pets/like?idUserPet=<%= data[0].idUserPet %>" id="like" class="btn like">💚</a>
+            <a href="https://wa.me/55<%= data.telefone.replace(/[()\s-]/g,'')%>?text=ola!gostaria de adotar seu pet <%= data.nome_pet %> que localizei na plataforma aventura-pet" id="send" class="btn send" target="_blank">📨</a>
         </div>
     </div>
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var send = document.getElementById('send');
+        send.addEventListener("click", async function(){
+            var idUserPet = document.getElementById("idUserPet");
+            console.log(idUserPet);
+            await fetch(`/aventura-pet/view-pets/like?idUserPet=${idUserPet.value}`,{
+                method:'get'
+            })
+            .then(response =>{
+                if(response.ok){
+                    location.reload(true);   
+                }
+            })
+        })
+    })
+</script>
