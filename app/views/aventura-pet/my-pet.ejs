@@ -27,13 +27,11 @@
                 <div class="botoes">
                     <%if(pet.disponivel){%>
                         <p>confirmar adoção</p>
-                        <a href="/aventura-pet/mark/<%= pet.id_user_pet %>" id="dislike"
+                        <a href="/aventura-pet/mark?idUserPet=<%= pet.id_user_pet %>" id="dislike"
                         class="btn dislike">✖️</a>
                     <%}else{%>
                         <p>Pet marcado como adotado</p>
                     <%}%>
-                    
-
                     
                 </div>
         </div>
