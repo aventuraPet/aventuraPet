@@ -10,11 +10,13 @@
      
        
         <div class="pet-section">
-           
+
                <% if("section" in fileName) {%>
-                    <%- include(fileName.section) %> 
+                    <%- include(fileName.section) %>
+                <%} else {%>
+                    <%- include('welcome'); -%>
                 <%}%>
-            
+
         </div>
     </div>
     <%- include('footer'); -%><!--roda pé  da pagina-->

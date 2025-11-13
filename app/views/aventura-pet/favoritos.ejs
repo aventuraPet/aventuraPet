@@ -34,7 +34,13 @@
 
                                     <a href="/aventura-pet/view-pets/like/<%= data.idUserPet %>" id="like"
                                           class="btn like">💚</a>
-                                    <a href="https://wa.me/55<%= data.telefone.replace(/[()\s-]/g,'')%>?text=ola!gostaria de adotar seu pet <%= data.nome_pet %> que localizei na plataforma aventura-pet" id="send" target="_blank" class="btn send">📨</a>
+
+
+                                    <a href="https://wa.me/55<%= data.telefone.replace(/[()\s-]/g,'')%>?text=ola!gostaria de adotar seu pet <%= data.nome_pet %> que localizei na plataforma aventura-pet" 
+                                       id="send" 
+                                       target="_blank" 
+                                       class="btn send"><img src="/img/logo-whatsapp.svg" alt=""></a>
+
                               </div>
                   </div>
                   <%})%>
