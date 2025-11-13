@@ -221,7 +221,7 @@ module.exports = {
                 { type: QueryTypes.SELECT }
             );
         }
-        
+
         if (notViewUserPet.length == 0) {
 
             return false;
@@ -255,7 +255,7 @@ module.exports = {
         let distance = calcDistance(latitudeUser, longitudeUser, latitudeUserPet, longitudeUserPet);
         //console.log(distance)
         //console.log(dataSerachCEPUser)
-        
+
         if (distance <= configDistanceUser) {
             return { result: true, cidade: cidadeUserPet, distance: distance };
         }
@@ -320,17 +320,17 @@ module.exports = {
 
         let petUser = await petUserModel.findAll({ where: { id_usuario: idUser } });
         let arrPetuser = JSON.parse(JSON.stringify(petUser, null));
-        if(arrPetuser.length == 0){
-           if (!req.session.strErrorMsg) {
+        if (arrPetuser.length == 0) {
+            if (!req.session.strErrorMsg) {
                 req.session.strErrorMsg = "voce ainda nao tem pets";
             }
 
-           return res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
+            return res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
         }
-       
+
         //arrPetuser.push(await this.getMyPets(arrPetuser));
         let arrImgPet = await this.getMyPets(arrPetuser);
-       
+
         //funcao para incluir as imagem de acordo com cada pet
         arrPetuser.forEach(pet => {
             arrImgPet.forEach(img => {
@@ -390,7 +390,7 @@ module.exports = {
             req.session.strSuccessMsg = "distancia alterada com sucesso";
         }
         this.configDistancePage(req, res);
-        
+
 
     },
     favoritePage: async function (req, res) {
@@ -406,19 +406,24 @@ module.exports = {
                 req.session.strErrorMsg = "voce ainda nao tem pets favorito";
             }
 
-           return res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
+            return res.render('aventura-pet/index', { fileName: { menu: "main" }, msgError: msgSession.getMsgError(req) });
         }
 
         let arrPet = await this.getPetUser(arrPetVisualizado);
-      
+        console.log(arrPet);
         for (const pet of arrPet) {
-            const imgPet = await imagePetModel.findAll({ where: { id_user_pet: pet[0].id_user_pet } });
-            const u = await contactUserModel.findAll({where:{id_usuario: pet[0].id_usuario}});
-            const arrU = JSON.parse(JSON.stringify(u, null));
-            const arrImgPet = JSON.parse(JSON.stringify(imgPet, null));
-            pet[0].img = Buffer.from(arrImgPet[0].imagem).toString("base64");
-            pet[0].telefone = arrU[0].telefone;
-           
+            if(pet.length != 0){
+                const imgPet = await imagePetModel.findAll({ where: { id_user_pet: pet[0].id_user_pet } });
+                const u = await contactUserModel.findAll({ where: { id_usuario: pet[0].id_usuario } });
+                const arrU = JSON.parse(JSON.stringify(u, null));
+                const arrImgPet = JSON.parse(JSON.stringify(imgPet, null));
+                pet[0].img = Buffer.from(arrImgPet[0].imagem).toString("base64");
+                pet[0].telefone = arrU[0].telefone;
+            }
+                
+            
+
+
         };
         let data = [];
 
@@ -434,8 +439,12 @@ module.exports = {
     getPetUser: async function (arrPetVisualizado) {
         let arrDataPet = Promise.all(
             arrPetVisualizado.map(async pet => {
-                const petUser = await petUserModel.findAll({ where: { id_user_pet: pet.id_user_pet } });
-                return JSON.parse(JSON.stringify(petUser, null))
+                if (pet.pet_like) {
+                    const petUser = await petUserModel.findAll({ where: { id_user_pet: pet.id_user_pet } });
+                    return JSON.parse(JSON.stringify(petUser, null))
+                }
+                return []
+
             }));
 
 
@@ -509,7 +518,7 @@ module.exports = {
             }
         });
 
-       
+
 
         res.status(200).redirect("/aventura-pet");
 
