@@ -33,10 +33,10 @@ CREATE TABLE view_pet_user(
     id_view_pet_user INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
     id_user_pet INT,
-    pet_like BOOLEAN
+    pet_like BOOLEAN,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
     FOREIGN KEY (id_user_pet) REFERENCES pet_user(id_user_pet)
-)
+);
 
 CREATE TABLE pet_user(
     id_user_pet INT PRIMARY key AUTO_INCREMENT,
@@ -59,6 +59,15 @@ CREATE TABLE configuracao_usuario(
     id_configuracao_usuario INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
     distancia INT,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE longitude_latitude_user(
+    id_longitude_latitude_user INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT,
+    cidade VARCHAR(200),
+    latitude VARCHAR(50),
+    longitude VARCHAR(50),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
 

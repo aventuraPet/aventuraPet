@@ -4,6 +4,8 @@ const contactUserModel = require('../model/models/contactUserModel');
 const passwordHashModel = require('../model/models/passwordHashModel');
 const configUserModel = require('../model/models/configUserModel');
 const bcrypt = require('bcryptjs');
+const searchCEP = require('../libs/searchCEP');
+const latitudeLongitudeUserModel = require('../model/models/longitudeLatitudeUserModel');
 
 module.exports = {
     index: function (req, res) {
@@ -39,11 +41,23 @@ module.exports = {
                 email: email,
                           
             });
+            
 
             await configUserModel.create({
                 id_usuario: idNewUser,
-                distancia: 10
+                distancia: 10 
             });
+            
+            let latLongResult = await this.getLatLong(cepSanitizado);
+            
+            await latitudeLongitudeUserModel.create({
+                id_usuario: idNewUser,
+                cidade: latLongResult.cidade,
+                latitude: latLongResult.latitude,
+                longitude: latLongResult.longitude
+            })
+
+            
 
             let salt = bcrypt.genSaltSync(10);
             let hash = bcrypt.hashSync(password, salt);
@@ -142,6 +156,13 @@ module.exports = {
         
         req.session.strSuccessMsg = "Nova conta criada com sucess agora insira o seu email e senha!"
         return res.redirect('/login');
+    },
+
+    getLatLong: async function(cep){
+        let resultCep = await searchCEP(cep);
+        
+        return {cidade: resultCep.cidade.nome, latitude: resultCep.latitude, longitude: resultCep.longitude}
+        
     }
 
 }

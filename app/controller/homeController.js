@@ -24,16 +24,18 @@ module.exports = {
         if (userPet != null) {
             //verifica se tem mais de um usuario com pet
             //interação do resultado da consulta de forma automatica se o usuario tiver um ou mais pets
+            
             if (userPet.length > 1) {
                 userPet.forEach(pets => {
-                    pets.pets.forEach(pet => {
+                    
+                    
                         data.push({
-                            "img": Buffer.from(pet.image.imagem).toString('base64'),
-                            "nome_pet": pet.nome_pet,
-                            "idade": pet.idade,
-                            "caracteristica": pet.caracteristica
+                            "img": Buffer.from(pets.image.imagem).toString('base64'),
+                            "nome_pet": pets.nome_pet,
+                            "idade": pets.idade,
+                            "caracteristica": pets.caracteristica
                         });
-                    });
+                
                 });
             } else {
                 //qunado o resultado da consulta tiver somente um usuario

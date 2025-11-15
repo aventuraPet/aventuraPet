@@ -2,7 +2,14 @@ const express = require('express');
 const loginRouter = express.Router();
 const loginController = require('../controller/loginController');
 const { checkSchema, validationResult } = require('express-validator');
-const aventuraPetController = require('../controller/aventuraPetController')
+
+loginRouter.get('/login/verify', function(req, res){
+    if (req.session.autentication) {
+        return res.send({logado: true});
+    }
+
+    return res.send({logado: false});
+})
 
 
 loginRouter.get('/login', function (req, res) {
