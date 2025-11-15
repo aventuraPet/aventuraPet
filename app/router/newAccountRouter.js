@@ -2,7 +2,7 @@ const express = require('express');
 const newAccountRouter = express.Router();
 const newAccountController = require('../controller/newAccountController');
 const { checkSchema, validationResult } = require('express-validator');
-
+const searchCEP = require('../libs/searchCEP');
 newAccountRouter.get('/new-account', function (req, res) {
     newAccountController.index(req, res);
 });
@@ -221,6 +221,11 @@ newAccountRouter.post('/new-account/login',
 
     });
 
+    newAccountRouter.get('/new-account/getlong', async function(req, res){
+        var result = await searchCEP('06447380');
+
+        console.log(result.cidade.nome)
+    })
 
 
 module.exports = newAccountRouter;
